@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://contentforge2026.loca.lt/sitemap.xml
+Sitemap: https://b19dvn7.github.io/contentforge/sitemap.xml
