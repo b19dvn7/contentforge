@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free AI Image Prompt Generator — ContentForge</title>
+    <meta name="description" content="Generate detailed, optimized prompts for Midjourney, DALL-E, and Stable Diffusion. Free, no signup required.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+        header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 40px 0 32px;
+            text-align: center;
+        }
+        header h1 { font-size: 2rem; font-weight: 800; }
+        header .back { 
+            color: #4fc3f7; text-decoration: none; font-size: 0.9rem;
+            display: block; margin-bottom: 12px;
+        }
+        header p { color: #b0bec5; font-size: 1rem; margin-top: 8px; }
+
+        .tool-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+        }
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+        .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4fc3f7;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+        .form-row .form-group { flex: 1; }
+
+        .btn-generate {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-generate:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(79, 195, 247, 0.4);
+        }
+        .btn-generate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-area {
+            margin-top: 24px;
+            display: none;
+        }
+        .result-area.visible { display: block; }
+
+        .result-content {
+            background: #f8f9ff;
+            border: 1px solid #e8eaf6;
+            border-radius: 8px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            min-height: 80px;
+        }
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .result-actions button {
+            padding: 8px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .result-actions button:hover {
+            border-color: #4fc3f7;
+            background: #e8f5fe;
+        }
+        .result-actions .copied {
+            border-color: #4caf50;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #4fc3f7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            padding: 12px 16px;
+            background: #ffebee;
+            color: #c62828;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+        .error-msg.visible { display: block; }
+
+        .rate-limit-info {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 12px;
+        }
+
+        .preset-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .preset-tag {
+            padding: 6px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.15s;
+        }
+        .preset-tag:hover {
+            border-color: #4fc3f7;
+            background: #e8f5fe;
+        }
+
+        .style-boosters {
+            background: #f8f9ff;
+            border: 1px solid #e8eaf6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: #666;
+            display: none;
+        }
+        .style-boosters.visible { display: block; }
+        .style-boosters strong { color: #333; }
+
+        .examples {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .example-card {
+            padding: 16px;
+            border: 1px solid #e8eaf6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .example-card:hover {
+            border-color: #4fc3f7;
+            background: #f8f9ff;
+        }
+        .example-card h4 { font-size: 0.9rem; color: #1a1a2e; }
+        .example-card p { font-size: 0.8rem; color: #888; margin-top: 4px; }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #999;
+            font-size: 0.85rem;
+        }
+        footer a { color: #4fc3f7; text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .form-row { flex-direction: column; gap: 0; }
+            .examples { grid-template-columns: 1fr; }
+            .tool-section { padding: 20px; }
+            header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="/" class="back">&larr; Back to ContentForge</a>
+        <h1>AI Image Prompt Generator</h1>
+        <p>Generate detailed, optimized prompts for Midjourney, DALL-E, and Stable Diffusion. Free, no signup.</p>
+    </div>
+</header>
+
+<main class="container">
+    <div class="tool-section">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="platform">Platform</label>
+                <select id="platform">
+                    <option value="midjourney">Midjourney</option>
+                    <option value="dalle3">DALL-E 3</option>
+                    <option value="stable-diffusion">Stable Diffusion</option>
+                    <option value="firefly">Adobe Firefly</option>
+                    <option value="leonardo">Leonardo AI</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="style">Style</label>
+                <select id="style">
+                    <option value="photorealistic">Photorealistic</option>
+                    <option value="cinematic">Cinematic</option>
+                    <option value="3d-render">3D Render</option>
+                    <option value="anime">Anime</option>
+                    <option value="oil-painting">Oil Painting</option>
+                    <option value="minimalist">Minimalist</option>
+                    <option value="cyberpunk">Cyberpunk</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="watercolor">Watercolor</option>
+                    <option value="pixel-art">Pixel Art</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="aspect">Aspect Ratio</label>
+                <select id="aspect">
+                    <option value="1:1">Square (1:1)</option>
+                    <option value="16:9">Landscape (16:9)</option>
+                    <option value="3:4">Portrait (3:4)</option>
+                    <option value="21:9">Wide (21:9)</option>
+                </select>
+            </div>
+            <div class="form-group" style="visibility:hidden;">
+                <label>&nbsp;</label>
+                <select disabled style="opacity:0.4;"><option>Spacer</option></select>
+            </div>
+        </div>
+
+        <div class="style-boosters" id="styleBoosters">
+            <strong>Quality boosters active:</strong> <span id="boosterText"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="prompt">Describe the image you want to create</label>
+            <textarea id="prompt" placeholder="e.g., a serene mountain lake at sunrise with mist rising from the water, pine trees framing the foreground, purple and orange sky..."></textarea>
+            <div class="hint">Include subject, setting, mood, colors, and any specific elements you want in the scene.</div>
+        </div>
+
+        <div class="preset-tags" id="presetTags">
+            <span class="preset-tag" data-platform="midjourney" data-style="cyberpunk" data-prompt="a neon-lit futuristic city street at night with rain-slicked pavement and holographic billboards">Cyberpunk City</span>
+            <span class="preset-tag" data-platform="dalle3" data-style="fantasy" data-prompt="an enchanted forest with glowing mushrooms, a winding stream, and a castle in the distance">Fantasy Forest</span>
+            <span class="preset-tag" data-platform="stable-diffusion" data-style="photorealistic" data-prompt="a sleek minimalist coffee maker on a marble countertop with soft morning light">Product Shot</span>
+            <span class="preset-tag" data-platform="leonardo" data-style="cinematic" data-prompt="a warrior woman with intricate armor standing on a cliff edge at sunset">Cinematic Portrait</span>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="generate()">Generate Prompt</button>
+
+        <div id="error" class="error-msg"></div>
+        <div class="rate-limit-info">Free API — one request every 15 seconds. Results appear below.</div>
+
+        <div class="result-area" id="resultArea">
+            <h3 style="margin-bottom: 12px; color: #333;">Your Optimized Prompt</h3>
+            <div class="result-content" id="resultContent"></div>
+            <div class="result-actions">
+                <button onclick="copyResult()" id="copyBtn">Copy to Clipboard</button>
+                <button onclick="regenerate()">Regenerate</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-section">
+        <h3 style="margin-bottom: 16px;">Try These Examples</h3>
+        <div class="examples">
+            <div class="example-card" onclick="loadExample('midjourney', 'cyberpunk', 'a neon-lit futuristic city street at night with rain-slicked pavement and holographic billboards, flying cars overhead')">
+                <h4>🏙️ Cyberpunk City</h4>
+                <p>Neon-drenched futuristic urban landscape — Midjourney</p>
+            </div>
+            <div class="example-card" onclick="loadExample('dalle3', 'fantasy', 'an enchanted forest at twilight with glowing mushrooms, ancient mossy ruins, and a magical blue stream winding through the trees')">
+                <h4>🌄 Fantasy Landscape</h4>
+                <p>Magical enchanted forest scene — DALL-E 3</p>
+            </div>
+            <div class="example-card" onclick="loadExample('stable-diffusion', 'photorealistic', 'a minimalist wireless speaker on a wooden desk, soft natural window light, subtle shadows, clean composition')">
+                <h4>📷 Product Photo</h4>
+                <p>Minimalist tech product studio shot — Stable Diffusion</p>
+            </div>
+            <div class="example-card" onclick="loadExample('leonardo', 'anime', 'a young mage casting a spell in a library filled with floating books, glowing runes, dust motes in sunbeams')">
+                <h4>🎭 Fantasy Character</h4>
+                <p>Anime-style mage in magical library — Leonardo AI</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-section" style="text-align: center;">
+        <h3 style="margin-bottom: 12px;">🚀 Need more AI tools?</h3>
+        <p style="color: #666; margin-bottom: 16px;">We're building a full suite of free AI content tools. <br>Leave your email below to get early access.</p>
+        <form class="signup-form" action="/signup" method="POST" style="display:flex; gap:12px; max-width:400px; margin:0 auto; flex-wrap:wrap; justify-content:center;">
+            <input type="email" name="email" placeholder="Your email" required style="flex:1;min-width:200px;padding:12px 16px;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;">
+            <button type="submit" style="padding:12px 24px;background:#1a1a2e;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Notify Me</button>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p><a href="/">ContentForge</a> — Free AI tools for people who build things.</p>
+    </div>
+</footer>
+
+<script>
+let lastResult = '';
+
+const PLATFORM_GUIDELINES = {
+    midjourney: 'Midjourney: Use descriptive, comma-separated phrases. Start with the subject, then environment, lighting, mood, style, and technical specs. Use --ar {aspect} for aspect ratio (replace {aspect} with the actual ratio). Include quality keywords like "8k, highly detailed, intricate details". Avoid prepositions like "a" or "the" — keep it lean. Do NOT include negative prompts or blending syntax.',
+    dalle3: 'DALL-E 3: Write a rich natural language paragraph. Be specific about composition, lighting, color palette, and style. Mention the aspect ratio naturally (e.g., "a wide landscape shot"). No special syntax needed. DALL-E follows detailed descriptions very well — include mood, era, artistic influences.',
+    'stable-diffusion': 'Stable Diffusion: Start with quality tags followed by subject and style. Use comma-separated keyword format. Place emphasis with (parentheses) for important terms. Include negative prompt suggestions prefixed with "Negative prompt:" on a new line. End with "masterpiece, best quality, extremely detailed CG, 8k". Mention aspect ratio context.',
+    firefly: 'Adobe Firefly: Use natural language with professional photographic terms. Include camera specs when relevant (e.g., "shot on Hasselblad, 50mm lens"). Specify "commercial photography" or "product photography" for realistic results. Good detail understanding. Mention aspect ratio in the description.',
+    leonardo: 'Leonardo AI: Descriptive, cinematic language. Focus on mood, atmosphere, and character/environment detail. Works especially well with fantasy, game art, and cinematic styles. Include "cinematic lighting, volumetric fog, dramatic composition". Mention aspect ratio context in the description.'
+};
+
+const STYLE_BOOSTERS = {
+    photorealistic: 'Nikon Z9 85mm f/1.4, sharp focus, shallow depth of field, natural lighting, hyper-realistic textures, 8K, ultra-detailed, lifelike',
+    cinematic: 'Wes Anderson composition, anamorphic lens, dramatic chiaroscuro lighting, vignette, cinematic color grading, subtle film grain, moody atmosphere',
+    '3d-render': 'Octane render, ray tracing, global illumination, subsurface scattering, highly detailed textures, 3D modeling, ambient occlusion, hyperrealistic CG',
+    anime: 'Studio Ghibli aesthetic, cel-shaded, vibrant saturated colors, clean bold lines, whimsical atmosphere, beautiful detailed backgrounds, hand-drawn style',
+    'oil-painting': 'oil on canvas, thick impasto technique, visible expressive brushstrokes, textured surface, chiaroscuro, Renaissance painting style, warm earthy palette',
+    minimalist: 'clean composition, generous negative space, simple elegant forms, soft diffused lighting, monochromatic palette, modern minimalist aesthetic',
+    cyberpunk: 'neon blue and pink lighting, rain-soaked streets, holographic displays, futuristic megacity, dark gritty atmosphere, cyberpunk aesthetic, blade runner vibes',
+    fantasy: 'ethereal magical atmosphere, glowing luminous elements, epic sweeping scale, fantasy art style, mystical lighting, detailed worldbuilding, otherworldly',
+    watercolor: 'watercolor painting, soft bleeding edges, cold-pressed paper texture, wet-on-wet technique, flowing translucent colors, delicate washes, artistic',
+    'pixel-art': 'pixel art style, 8-bit retro gaming aesthetic, limited color palette, blocky pixelated resolution, chunky pixels, old-school game art, nostalgic'
+};
+
+function getSystemPrompt(platform, style, aspect) {
+    const platformGuide = PLATFORM_GUIDELINES[platform] || PLATFORM_GUIDELINES.midjourney;
+    const boosters = STYLE_BOOSTERS[style] || STYLE_BOOSTERS.photorealistic;
+
+    return `You are an expert AI image prompt engineer. Your job is to take a user's description and generate ONE single, optimized, production-ready prompt they can paste directly into ${platform === 'midjourney' ? 'Midjourney' : platform === 'dalle3' ? 'DALL-E 3' : platform === 'stable-diffusion' ? 'Stable Diffusion' : platform === 'firefly' ? 'Adobe Firefly' : 'Leonardo AI'}.
+
+Platform-specific rules:
+${platformGuide}
+
+Style-specific quality boosters (incorporate naturally into the prompt where relevant):
+${boosters}
+
+Aspect ratio: ${aspect}. ${platform === 'midjourney' ? 'Add --ar ' + aspect + ' at the end.' : 'Describe the composition to suit this ratio.'}
+
+Rules:
+- Return ONLY the prompt text. No introductions, no explanations, no markdown formatting.
+- Do NOT wrap in quotes. Return the raw prompt text only.
+- Make the prompt detailed but concise — typically 2-4 sentences or a tight paragraph.
+- Incorporate relevant quality boosters naturally.
+- Optimize specifically for the chosen platform's syntax.
+- If the user describes a scene, expand it with complementary visual details that enhance the image without changing the core subject.`;
+}
+
+function updateBoosterInfo() {
+    const style = document.getElementById('style').value;
+    const el = document.getElementById('styleBoosters');
+    const text = document.getElementById('boosterText');
+    const boosters = STYLE_BOOSTERS[style];
+    if (boosters) {
+        text.textContent = boosters;
+        el.classList.add('visible');
+    } else {
+        el.classList.remove('visible');
+    }
+}
+
+document.getElementById('style').addEventListener('change', updateBoosterInfo);
+updateBoosterInfo();
+
+async function generate() {
+    const platform = document.getElementById('platform').value;
+    const style = document.getElementById('style').value;
+    const aspect = document.getElementById('aspect').value;
+    const prompt = document.getElementById('prompt').value.trim();
+    const errorEl = document.getElementById('error');
+    const btn = document.getElementById('generateBtn');
+
+    errorEl.classList.remove('visible');
+    errorEl.textContent = '';
+
+    if (!prompt) {
+        showError('Please describe the image you want to create.');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Generating...';
+
+    const systemText = getSystemPrompt(platform, style, aspect);
+    const userMessage = `Generate an optimized image prompt for this scene: ${prompt}
+
+Style: ${style}
+Aspect ratio: ${aspect}
+Platform: ${platform}
+
+Return ONLY the optimized prompt text, ready to paste.`;
+
+    try {
+        const response = await fetch('https://text.pollinations.ai/openai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'openai',
+                messages: [
+                    { role: 'system', content: systemText },
+                    { role: 'user', content: userMessage }
+                ],
+                temperature: 0.8,
+                max_tokens: 800
+            })
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const result = data.choices?.[0]?.message?.content || 'No response generated.';
+
+        lastResult = result;
+
+        document.getElementById('resultContent').textContent = result;
+        document.getElementById('resultArea').classList.add('visible');
+        document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
+        document.getElementById('copyBtn').classList.remove('copied');
+
+    } catch (err) {
+        try {
+            const fullPrompt = encodeURIComponent(systemText + '\n\n' + userMessage);
+            const resp = await fetch('https://text.pollinations.ai/' + fullPrompt, {
+                headers: { 'Accept': 'text/plain' }
+            });
+            if (!resp.ok) throw new Error('GET also failed');
+            const result = await resp.text();
+
+            lastResult = result;
+
+            document.getElementById('resultContent').textContent = result;
+            document.getElementById('resultArea').classList.add('visible');
+            document.getElementById('copyBtn').textContent = 'Copy to Clipboard';
+            document.getElementById('copyBtn').classList.remove('copied');
+        } catch (fallbackErr) {
+            showError(fallbackErr.message || 'Generation failed. Please wait a moment and try again.');
+            console.error('Generate error:', err, 'Fallback error:', fallbackErr);
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Generate Prompt';
+    }
+}
+
+function copyResult() {
+    const btn = document.getElementById('copyBtn');
+    navigator.clipboard.writeText(lastResult).then(() => {
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'Copy to Clipboard';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = lastResult;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'Copy to Clipboard';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+function regenerate() {
+    generate();
+}
+
+function loadExample(platform, style, prompt) {
+    document.getElementById('platform').value = platform;
+    document.getElementById('style').value = style;
+    document.getElementById('prompt').value = prompt;
+    updateBoosterInfo();
+    document.getElementById('prompt').focus();
+}
+
+function showError(msg) {
+    const el = document.getElementById('error');
+    el.textContent = msg;
+    el.classList.add('visible');
+}
+
+document.querySelectorAll('.preset-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+        const platform = this.dataset.platform;
+        const style = this.dataset.style;
+        const prompt = this.dataset.prompt;
+        loadExample(platform, style, prompt);
+    });
+});
+
+document.querySelectorAll('.signup-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = form.email.value;
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                form.innerHTML = '<p style="color:#2e7d32;font-weight:500;">✓ You\'re on the list!</p>';
+            }
+        } catch (err) {
+            // Silent fail
+        }
+    });
+});
+</script>
+
+</body>
+</html>

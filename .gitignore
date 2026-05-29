@@ -1,0 +1,11 @@
+# ContentForge — Free AI Content Toolkit
+
+__pycache__/
+*.pyc
+signups.json
+lt_output.log
+server_output.log
+try_*.py
+*~
+.DS_Store
+*.log
