@@ -1,0 +1,6 @@
+Bitcoin Address: 1rHfsqBJb21E2EbxytMNJqM1BRveYYUHP
+Private Key (hex): c08f9d2024fd0f0de7b367471a11f69ee8340a235c8c57b8c6f15ae336a92654
+Private Key (WIF): TBD
+
+IMPORTANT: Keep private key secret and secure.
+Anyone with access to the private key controls these funds.
