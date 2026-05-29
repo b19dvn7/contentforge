@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://contentforge2026.loca.lt/sitemap.xml

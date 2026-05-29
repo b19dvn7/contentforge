@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Write AI Image Prompts: Guide for Midjourney, DALL-E & Stable Diffusion</title>
+  <meta name="description" content="Learn how to craft detailed AI image prompts that get results. Free prompt generator included for Midjourney, DALL-E 3, and Stable Diffusion.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://contentforge2026.loca.lt/blog/ai-image-prompts-guide.html">
+  <meta property="og:title" content="How to Write AI Image Prompts: Guide for Midjourney, DALL-E & Stable Diffusion">
+  <meta property="og:description" content="Learn how to craft detailed AI image prompts that get results. Free prompt generator included for Midjourney, DALL-E 3, and Stable Diffusion.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://contentforge2026.loca.lt/blog/ai-image-prompts-guide.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Write AI Image Prompts: Guide for Midjourney, DALL-E & Stable Diffusion">
+  <meta name="twitter:description" content="Learn how to craft detailed AI image prompts that get results. Free prompt generator included for Midjourney, DALL-E 3, and Stable Diffusion.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      background: #f8f9fa;
+    }
+    a { color: #4fc3f7; text-decoration: none; transition: color .2s; }
+    a:hover { color: #29b6f6; text-decoration: underline; }
+    img { max-width: 100%; height: auto; }
+
+    /* Header */
+    .site-header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 1rem 0;
+      border-bottom: 3px solid #4fc3f7;
+    }
+    .site-header .inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .site-header .brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .site-header .brand span { color: #4fc3f7; }
+    .site-header .back-link {
+      font-size: .9rem;
+      color: #4fc3f7;
+    }
+    .site-header .back-link:hover { color: #81d4fa; }
+
+    /* Container */
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 1.5rem;
+    }
+
+    /* Article */
+    article h1 {
+      font-size: 2.2rem;
+      line-height: 1.25;
+      color: #1a1a2e;
+      margin-bottom: .5rem;
+    }
+    .meta {
+      color: #777;
+      font-size: .9rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 1rem;
+    }
+    article h2 {
+      font-size: 1.55rem;
+      color: #1a1a2e;
+      margin: 2.2rem 0 .8rem;
+      padding-bottom: .35rem;
+      border-bottom: 2px solid #4fc3f7;
+    }
+    article h3 {
+      font-size: 1.2rem;
+      color: #1a1a2e;
+      margin: 1.6rem 0 .5rem;
+    }
+    article p { margin-bottom: 1.1rem; }
+    article ul, article ol { margin: 0 0 1.1rem 1.5rem; }
+    article li { margin-bottom: .4rem; }
+
+    /* Prompt comparison blocks */
+    .prompt-block {
+      background: #fff;
+      border-left: 4px solid #4fc3f7;
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0 1.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    }
+    .prompt-block.bad { border-left-color: #e53935; }
+    .prompt-block.good { border-left-color: #43a047; }
+    .prompt-block .label {
+      font-size: .8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .35rem;
+    }
+    .prompt-block.bad .label { color: #e53935; }
+    .prompt-block.good .label { color: #43a047; }
+    .prompt-block code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: .9rem;
+      color: #1a1a2e;
+      background: #f0f0f5;
+      padding: .15rem .4rem;
+      border-radius: 3px;
+    }
+    .prompt-block .why {
+      font-size: .88rem;
+      color: #555;
+      margin-top: .5rem;
+    }
+
+    /* CTA */
+    .cta-box {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      border-radius: 10px;
+      padding: 2rem 2.2rem;
+      margin: 2.5rem 0;
+      text-align: center;
+    }
+    .cta-box h2 {
+      color: #fff;
+      border: none;
+      margin-top: 0;
+      padding: 0;
+      font-size: 1.6rem;
+    }
+    .cta-box p { font-size: 1rem; color: #ccc; margin-bottom: 1.5rem; }
+    .cta-box .btn {
+      display: inline-block;
+      background: #4fc3f7;
+      color: #1a1a2e;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: .85rem 2.2rem;
+      border-radius: 6px;
+      transition: background .2s, transform .15s;
+    }
+    .cta-box .btn:hover {
+      background: #81d4fa;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* Info table */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0 1.5rem;
+      font-size: .95rem;
+    }
+    .comp-table th, .comp-table td {
+      border: 1px solid #ddd;
+      padding: .65rem .85rem;
+      text-align: left;
+    }
+    .comp-table th {
+      background: #1a1a2e;
+      color: #fff;
+      font-weight: 600;
+    }
+    .comp-table tr:nth-child(even) { background: #f5f5fa; }
+
+    /* Term grid */
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: .8rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .term-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: .8rem 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    }
+    .term-card strong { color: #1a1a2e; display: block; font-size: .95rem; }
+    .term-card span { font-size: .85rem; color: #555; }
+
+    /* Footer */
+    .site-footer {
+      background: #1a1a2e;
+      color: #aaa;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: .85rem;
+    }
+    .site-footer a { color: #4fc3f7; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 1.5rem 1rem; }
+      article h1 { font-size: 1.6rem; }
+      article h2 { font-size: 1.3rem; }
+      .cta-box { padding: 1.5rem 1.2rem; }
+      .cta-box h2 { font-size: 1.3rem; }
+      .comp-table { font-size: .85rem; }
+      .comp-table th, .comp-table td { padding: .5rem .55rem; }
+      .site-header .inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="inner">
+    <a href="/" class="brand">Content<span>Forge</span></a>
+    <a href="/" class="back-link">&larr; Back to ContentForge</a>
+  </div>
+</header>
+
+<!-- Article -->
+<div class="container">
+  <article>
+    <h1>The Art of AI Image Prompts: A Practical Guide</h1>
+    <p class="meta">Updated May 2026 &middot; 9 min read</p>
+
+    <p>AI image generators have exploded in capability. Midjourney V7, DALL-E 3, and Stable Diffusion 3.5 can produce visuals that rival professional photography and illustration &mdash; <em>if</em> you give them the right instructions. The difference between a flat, generic output and a stunning, usable image often comes down to one thing: <strong>your prompt</strong>.</p>
+
+    <p>This guide covers what actually works when writing AI image prompts. You'll learn how each platform interprets language differently, which modifiers move the needle, and how to avoid the most common mistakes. By the end, you'll be able to write prompts that consistently produce the images you envision.</p>
+
+    <h2>Why Prompt Structure Matters</h2>
+    <p>Every AI image model converts your text into a latent representation and then decodes it into pixels. Vague language gives the model too much freedom, producing generic results. Specific, structured language constrains the output toward your intent.</p>
+    <p>A well-structured prompt typically includes:</p>
+    <ul>
+      <li><strong>Subject</strong> &mdash; what or who is in the image</li>
+      <li><strong>Action / Pose</strong> &mdash; what the subject is doing</li>
+      <li><strong>Environment</strong> &mdash; where the scene takes place</li>
+      <li><strong>Lighting &amp; Color</strong> &mdash; the mood and atmosphere</li>
+      <li><strong>Style &amp; Medium</strong> &mdash; the artistic direction</li>
+      <li><strong>Composition</strong> &mdash; framing, angle, and perspective</li>
+    </ul>
+
+    <h2>Platform Differences: Midjourney vs DALL-E 3 vs Stable Diffusion</h2>
+    <p>Each model has a distinct "personality" and responds to language differently. Using the same prompt across all three will give you very different results.</p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>Midjourney</th>
+          <th>DALL-E 3</th>
+          <th>Stable Diffusion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Language style</td>
+          <td>Descriptive, poetic, comma-separated keywords</td>
+          <td>Natural sentences, full paragraphs</td>
+          <td>Keyword-heavy, tag-like, weighted terms</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>Artistic, stylized, cinematic visuals</td>
+          <td>Photorealistic scenes, complex compositions</td>
+          <td>Fine-tuned niche styles, NSFW (local), control via LoRAs</td>
+        </tr>
+        <tr>
+          <td>Parameter syntax</td>
+          <td><code>--ar 16:9 --style raw --s 250</code></td>
+          <td>No parameters (natural language only)</td>
+          <td><code>negative prompt:</code>, <code>(term:1.3)</code>, <code>CFG scale</code></td>
+        </tr>
+        <tr>
+          <td>Negative prompts</td>
+          <td>Use <code>--no</code> flag</td>
+          <td>Describe what you <em>don't</em> want in plain text</td>
+          <td>Separate negative prompt field</td>
+        </tr>
+        <tr>
+          <td>Image prompting</td>
+          <td>Image URLs + text (strong)</td>
+          <td>Upload image + text (moderate)</td>
+          <td>Img2Img, ControlNet (very strong)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Midjourney</strong> shines when you write atmospheric, cinematic descriptions. It handles style modifiers like <em>photorealistic</em>, <em>octane render</em>, and <em>cinematic lighting</em> exceptionally well. Use parameters like <code>--ar 16:9</code> for widescreen or <code>--style raw</code> for less of Midjourney's default polish.</p>
+
+    <p><strong>DALL-E 3</strong> understands natural language better than any other model. You can write "A corgi wearing a detective hat examines a tiny chalkboard" and it will nail the composition. It's weaker at fine-grained style control but excels at following complex scene descriptions.</p>
+
+    <p><strong>Stable Diffusion</strong> gives you the most control through its ecosystem of LoRAs (low-rank adaptations), embeddings, and ControlNets. Prompts tend to be shorter and more tag-like: <code>masterpiece, best quality, 1girl, solo, (detailed face:1.2)</code>. Negative prompts are essential here to suppress bad anatomy or artifacts.</p>
+
+    <h2>Style Modifiers That Work</h2>
+    <p>Adding the right style modifier transforms a generic output into something intentional. Here are categories that consistently produce strong results:</p>
+
+    <div class="term-grid">
+      <div class="term-card">
+        <strong>Photography Terms</strong>
+        <span>hyperrealistic, editorial photography, macro shot, 85mm lens, f/1.8, depth of field, film grain, Kodak Portra 400</span>
+      </div>
+      <div class="term-card">
+        <strong>Art Movements</strong>
+        <span>impressionism, art deco, art nouveau, surrealism, synthwave, vaporwave, ukiyo-e, baroque</span>
+      </div>
+      <div class="term-card">
+        <strong>Render Styles</strong>
+        <span>octane render, Unreal Engine 5, ray tracing, volumetric lighting, 3D render, claymation, isometric</span>
+      </div>
+      <div class="term-card">
+        <strong>Mood &amp; Atmosphere</strong>
+        <span>ethereal, melancholic, serene, ominous, vibrant, muted, desaturated, high contrast, pastel tones</span>
+      </div>
+    </div>
+
+    <h2>Lighting &amp; Camera Terms</h2>
+    <p>Lighting is one of the most underused prompt elements. Adding a single lighting term can completely change the emotional impact of your image.</p>
+    <ul>
+      <li><strong>Golden hour</strong> &mdash; warm, directional sunlight just after sunrise or before sunset</li>
+      <li><strong>Cinematic lighting</strong> &mdash; dramatic, often high-contrast lighting with strong shadows</li>
+      <li><strong>Soft diffused light</strong> &mdash; even, flattering light with minimal shadows, like an overcast day</li>
+      <li><strong>Rim lighting</strong> &mdash; light from behind that outlines the subject's edges</li>
+      <li><strong>Neon lighting</strong> &mdash; colored artificial light, great for cyberpunk scenes</li>
+      <li><strong>Crepuscular rays</strong> &mdash; visible light beams streaming through gaps (god rays)</li>
+    </ul>
+    <p>Camera terms also matter: <em>low angle shot</em> makes subjects feel powerful, <em>aerial view</em> gives a top-down perspective, and <em>macro photography</em> forces extreme close-up detail.</p>
+
+    <h2>Bad Prompt vs Good Prompt: Real Examples</h2>
+
+    <h3>Example 1: Portrait</h3>
+    <div class="prompt-block bad">
+      <div class="label">Bad</div>
+      <code>A woman sitting in a chair</code>
+      <div class="why">Too vague. The model doesn't know age, style, lighting, or mood. You'll get a generic stock photo look.</div>
+    </div>
+    <div class="prompt-block good">
+      <div class="label">Good</div>
+      <code>A middle-aged woman in a tailored linen blazer sits in a rattan armchair on a sunlit balcony, soft diffused natural light, warm earthy tones, shallow depth of field, editorial photography style, 85mm f/1.8</code>
+      <div class="why">Specifies subject, clothing, setting, lighting, color palette, and photography style. The result is specific and usable.</div>
+    </div>
+
+    <h3>Example 2: Product Shot</h3>
+    <div class="prompt-block bad">
+      <div class="label">Bad</div>
+      <code>A perfume bottle</code>
+      <div class="why">No context, no style direction. Expect a boring 3D render with no commercial appeal.</div>
+    </div>
+    <div class="prompt-block good">
+      <div class="label">Good</div>
+      <code>A luxury perfume bottle with amber liquid, frosted glass, gold metallic cap, floating on a reflective black surface, dramatic side lighting, dark moody studio background, shallow DOF, product photography, 8K, hyperrealistic</code>
+      <div class="why">Describes materials, lighting setup, background, and commercial photography style. Ready for use in advertising.</div>
+    </div>
+
+    <h3>Example 3: Landscape</h3>
+    <div class="prompt-block bad">
+      <div class="label">Bad</div>
+      <code>A mountain landscape</code>
+      <div class="why">Every mountain looks the same with this prompt. No time of day, no weather, no emotional direction.</div>
+    </div>
+    <div class="prompt-block good">
+      <div class="label">Good</div>
+      <code>A majestic snow-capped mountain peak at sunrise, alpine meadow in the foreground with wildflowers, golden hour lighting, crepuscular rays breaking through clouds, mist rising from the valley, cinematic wide shot, 16:9, ultra-detailed, photorealistic</code>
+      <div class="why">Establishes time of day, foreground elements, atmospheric effects, and cinematic framing. The emotional impact is clear.</div>
+    </div>
+
+    <h2>Common Mistakes to Avoid</h2>
+    <ol>
+      <li><strong>Overloading the prompt.</strong> More words isn't always better. 50&ndash;80 well-chosen words beat 200 loosely related ones. Stick to what's essential.</li>
+      <li><strong>Ignoring negative prompts.</strong> On Stable Diffusion and Midjourney, negative prompts remove unwanted elements (blurry, extra limbs, watermark). Learn to use them.</li>
+      <li><strong>Not specifying aspect ratio.</strong> Midjourney defaults to 1:1. DALL-E defaults to a wider aspect. Always set <code>--ar</code> or describe the framing so you don't crop later.</li>
+      <li><strong>Contradictory terms.</strong> Don't mix "black and white" with "vibrant colors." The model will average them into muddy results.</li>
+      <li><strong>Expecting text generation.</strong> AI image models still struggle with rendering legible text. If you need words in the image, add them in post-processing.</li>
+    </ol>
+
+    <h2>Iteration is Part of the Process</h2>
+    <p>Professional prompt engineers rarely nail a prompt on the first try. The standard workflow is: generate &rarr; critique &rarr; refine &rarr; generate again. Note which modifiers moved the output in the right direction and which ones confused the model. Over time, you'll build a mental library of terms that work for your specific use case.</p>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h2>Try Our Free AI Image Prompt Generator</h2>
+      <p>Not sure where to start? Our free tool builds structured prompts for Midjourney, DALL-E 3, and Stable Diffusion in seconds. Select your platform, subject, style, and lighting preferences, and we'll generate a production-ready prompt.</p>
+      <a href="/tools/ai-image-prompt-generator.html" class="btn">Try the Prompt Generator &rarr;</a>
+    </div>
+
+    <p>Mastering AI image prompts is a skill that pays off immediately. Every hour spent learning to craft better prompts saves you hours of trial-and-error generation. Bookmark this guide and refer back to it as you experiment with different models and styles.</p>
+
+  </article>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <p>&copy; 2026 <a href="/">ContentForge</a>. All rights reserved. Built for creators who refuse to settle for generic content.</p>
+</footer>
+
+</body>
+</html>
